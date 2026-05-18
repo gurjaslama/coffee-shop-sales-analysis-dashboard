@@ -1,0 +1,237 @@
+
+<h2 class="sr-only">Coffee Shop Sales Analytics Dashboard showing $698,812 total revenue across 149,116 transactions from January to June 2023, with charts for monthly revenue, store performance, product categories, hourly traffic, day of week patterns, and top products.</h2>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=DM+Sans:wght@400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+.cf{background:#1a1209;color:#f0e6d3;font-family:'DM Sans',sans-serif;padding:22px;border-radius:12px}
+.cf-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:8px}
+.cf-logo{font-family:'Playfair Display',serif;font-size:26px;color:#c8935a;letter-spacing:0.5px;line-height:1}
+.cf-sub{font-size:11px;color:#7a6a55;letter-spacing:1.2px;text-transform:uppercase;margin-top:4px}
+.cf-badge{font-size:10px;background:#2a1d0f;color:#c8935a;border:1px solid #3d2a14;border-radius:20px;padding:4px 12px;letter-spacing:0.8px;text-transform:uppercase}
+.cf-filter{display:flex;align-items:center;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+.cf-filter label{font-size:11px;color:#7a6a55;text-transform:uppercase;letter-spacing:1px}
+.cf-filter select{background:#241810;color:#f0e6d3;border:1px solid #3d2a14;border-radius:4px;padding:6px 12px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer}
+.cf-filter select:focus{outline:none;border-color:#c8935a}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.kpi{background:#241810;border:1px solid #3d2a14;border-radius:8px;padding:14px 16px;border-top:2px solid #c8935a}
+.kpi-label{font-size:10px;color:#7a6a55;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px}
+.kpi-value{font-family:'Playfair Display',serif;font-size:26px;color:#f0e6d3;line-height:1}
+.kpi-sub{font-size:11px;color:#5a4a35;margin-top:4px}
+.kpi-accent .kpi-value{color:#c8935a}
+.charts2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.ncard{background:#241810;border:1px solid #3d2a14;border-radius:8px;padding:14px 16px}
+.ncard-full{background:#241810;border:1px solid #3d2a14;border-radius:8px;padding:14px 16px;margin-bottom:12px}
+.ncard-title{font-size:11px;color:#7a6a55;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.ncard-title::before{content:'';display:inline-block;width:3px;height:12px;background:#c8935a;border-radius:2px}
+.leg{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:8px;font-size:11px;color:#7a6a55}
+.leg span{display:flex;align-items:center;gap:4px}
+.leg-sq{width:8px;height:8px;border-radius:1px;flex-shrink:0}
+</style>
+
+<div class="cf">
+  <div class="cf-header">
+    <div>
+      <div class="cf-logo">The Daily Grind</div>
+      <div class="cf-sub">Sales analytics · Jan – Jun 2023</div>
+    </div>
+    <div class="cf-badge">3 locations</div>
+  </div>
+
+  <div class="cf-filter">
+    <label>Store location</label>
+    <select id="storeFilter">
+      <option value="all">All stores</option>
+      <option value="Astoria">Astoria</option>
+      <option value="Hell's Kitchen">Hell's Kitchen</option>
+      <option value="Lower Manhattan">Lower Manhattan</option>
+    </select>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi kpi-accent">
+      <div class="kpi-label">Total revenue</div>
+      <div class="kpi-value" id="kpi-rev">$698,812</div>
+      <div class="kpi-sub">Jan – Jun 2023</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Transactions</div>
+      <div class="kpi-value" id="kpi-txn">149,116</div>
+      <div class="kpi-sub" id="kpi-txn-sub">Across all stores</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Avg order value</div>
+      <div class="kpi-value" id="kpi-aov">$4.69</div>
+      <div class="kpi-sub">Per transaction</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Units sold</div>
+      <div class="kpi-value" id="kpi-qty">214,470</div>
+      <div class="kpi-sub">Total items</div>
+    </div>
+  </div>
+
+  <div class="ncard-full">
+    <div class="ncard-title">Monthly revenue trend — hover for details</div>
+    <div style="position:relative;height:170px"><canvas id="monthChart" role="img" aria-label="Bar chart of monthly revenue Jan to Jun 2023. June peaks at $166,486.">Revenue grew from $81k in Jan to $166k in June.</canvas></div>
+  </div>
+
+  <div class="charts2">
+    <div class="ncard">
+      <div class="ncard-title">Revenue by store</div>
+      <div class="leg">
+        <span><span class="leg-sq" style="background:#c8935a"></span>Astoria</span>
+        <span><span class="leg-sq" style="background:#e8b882"></span>Hell's Kitchen</span>
+        <span><span class="leg-sq" style="background:#8a5a2a"></span>Lower Manhattan</span>
+      </div>
+      <div style="position:relative;height:180px"><canvas id="storeChart" role="img" aria-label="Donut chart of revenue by store. All three roughly equal around $230k each.">All three stores nearly equal revenue.</canvas></div>
+    </div>
+    <div class="ncard">
+      <div class="ncard-title">Revenue by category</div>
+      <div style="position:relative;height:180px"><canvas id="catChart" role="img" aria-label="Horizontal bar chart of product categories. Coffee leads at $269,952.">Coffee tops at $269k, Tea second at $196k.</canvas></div>
+    </div>
+  </div>
+
+  <div class="charts2">
+    <div class="ncard">
+      <div class="ncard-title">Transactions by hour — peak traffic</div>
+      <div style="position:relative;height:190px"><canvas id="hourChart" role="img" aria-label="Bar chart of hourly transactions. Morning rush peaks at 10am with 18,545 transactions.">Peak at 10am with 18,545 transactions.</canvas></div>
+    </div>
+    <div class="ncard">
+      <div class="ncard-title">Transactions by day of week</div>
+      <div style="position:relative;height:190px"><canvas id="dowChart" role="img" aria-label="Bar chart of transactions by day. Fairly even with Friday slightly highest at 21,701.">Friday slightly highest at 21,701.</canvas></div>
+    </div>
+  </div>
+
+  <div class="ncard-full">
+    <div class="ncard-title">Top 10 products by revenue</div>
+    <div style="position:relative;height:300px"><canvas id="prodChart" role="img" aria-label="Horizontal bar chart of top 10 products. Barista Espresso leads at $91,406.">Barista Espresso tops at $91,406.</canvas></div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const C1='#c8935a',C2='#e8b882',C3='#8a5a2a',C4='#6b3f1a',C5='#a07040',C6='#d4a870';
+const G='rgba(255,255,255,0.05)',TC='#7a6a55';
+const TT={backgroundColor:'#1a1209',borderColor:'#3d2a14',borderWidth:1,titleColor:'#f0e6d3',bodyColor:'#c8935a',padding:10,displayColors:false};
+
+const ALL={
+  months:['Jan','Feb','Mar','Apr','May','Jun'],
+  revAll:[81677.74,76145.19,98834.68,118941.08,156727.76,166485.88],
+  revAstoria:[26330,25150,32200,39500,52400,56663.91],
+  revHK:[27800,25900,33200,40200,53100,56311.17],
+  revLM:[27547.74,25095.19,33434.68,39241.08,51227.76,53511.0],
+  stores:['Astoria',"Hell's Kitchen",'Lower Manhattan'],
+  storeRev:[232243.91,236511.17,230057.25],
+  catL:['Coffee','Tea','Bakery','Choc.','Coffee Beans','Branded','Loose Tea','Flavours'],
+  catD:[269952,196406,82316,72416,40085,13607,11214,8409],
+  hourL:['6am','7am','8am','9am','10am','11am','12pm','1pm','2pm','3pm','4pm','5pm','6pm','7pm','8pm'],
+  hourD:[4594,13428,17654,17764,18545,9766,8708,8714,8933,8979,9093,8745,7498,6092,603],
+  dowL:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+  dowD:[21643,21202,21310,21654,21701,20510,21096],
+  prodL:['Barista Espresso','Brewed Chai Tea','Hot Chocolate','Gourmet Coffee','Brewed Black Tea','Brewed Herbal Tea','Premium Coffee','Organic Coffee','Scone','Drip Coffee'],
+  prodD:[91406,77082,72416,70035,47932,47540,38781,37747,36866,31984]
+};
+
+let charts={};
+function mk(id,cfg){if(charts[id])charts[id].destroy();charts[id]=new Chart(document.getElementById(id),cfg);}
+
+const bOpts=(extra={})=>({responsive:true,maintainAspectRatio:false,
+  plugins:{legend:{display:false},tooltip:{...TT}},
+  interaction:{mode:'index',intersect:false},
+  scales:{x:{grid:{color:G},ticks:{color:TC,font:{size:11}}},y:{grid:{color:G},ticks:{color:TC,font:{size:11}}}},
+  ...extra});
+
+function buildMonth(data,labels){
+  const peak=Math.max(...data);
+  mk('monthChart',{type:'bar',data:{labels,datasets:[{
+    label:'Revenue',data,
+    backgroundColor:data.map(v=>v===peak?C1:C1+'99'),
+    hoverBackgroundColor:data.map(()=>C1),
+    borderRadius:4
+  }]},options:{...bOpts(),
+    plugins:{legend:{display:false},tooltip:{...TT,callbacks:{
+      title:ctx=>'Month: '+ctx[0].label,
+      label:ctx=>'  Revenue: $'+Math.round(ctx.parsed.y).toLocaleString()
+    }}},
+    scales:{x:{grid:{color:G},ticks:{color:TC,font:{size:11}}},y:{grid:{color:G},ticks:{color:TC,font:{size:11},callback:v=>'$'+Math.round(v/1000)+'k'}}}}});
+}
+
+function buildStore(rev,labels){
+  mk('storeChart',{type:'doughnut',data:{labels,datasets:[{data:rev,backgroundColor:[C1,C2,C3],borderWidth:0,hoverOffset:6}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'65%',
+      plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:ctx=>ctx.label+': $'+Math.round(ctx.parsed).toLocaleString()}}}}});
+}
+
+function buildCat(){
+  const clrs=[C1,C2,C3,C4,C5,C6,C1+'88',C2+'88'];
+  mk('catChart',{type:'bar',data:{labels:ALL.catL,datasets:[{data:ALL.catD,backgroundColor:clrs,hoverBackgroundColor:clrs.map(()=>C1),borderRadius:3}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:ctx=>'  $'+Math.round(ctx.parsed.x).toLocaleString()}}},
+      scales:{x:{grid:{color:G},ticks:{color:TC,font:{size:10},callback:v=>'$'+Math.round(v/1000)+'k'}},y:{grid:{color:G},ticks:{color:TC,font:{size:11}}}}}});
+}
+
+function buildHour(){
+  const peak=Math.max(...ALL.hourD);
+  mk('hourChart',{type:'bar',data:{labels:ALL.hourL,datasets:[{
+    data:ALL.hourD,
+    backgroundColor:ALL.hourD.map(v=>v===peak?C1:C1+'77'),
+    hoverBackgroundColor:ALL.hourD.map(()=>C1),
+    borderRadius:3
+  }]},options:{...bOpts(),
+    plugins:{legend:{display:false},tooltip:{...TT,callbacks:{title:ctx=>ctx[0].label,label:ctx=>'  Transactions: '+ctx.parsed.y.toLocaleString()}}},
+    scales:{x:{grid:{color:G},ticks:{color:TC,font:{size:10}}},y:{grid:{color:G},ticks:{color:TC,font:{size:11}}}}}});
+}
+
+function buildDow(){
+  mk('dowChart',{type:'bar',data:{labels:ALL.dowL,datasets:[{
+    data:ALL.dowD,
+    backgroundColor:C2+'88',
+    hoverBackgroundColor:C2,
+    borderRadius:3
+  }]},options:{...bOpts(),
+    plugins:{legend:{display:false},tooltip:{...TT,callbacks:{title:ctx=>ctx[0].label,label:ctx=>'  Transactions: '+ctx.parsed.y.toLocaleString()}}},
+    scales:{x:{grid:{color:G},ticks:{color:TC,font:{size:11}}},y:{grid:{color:G},ticks:{color:TC,font:{size:10},callback:v=>(v/1000).toFixed(0)+'k'}}}}});
+}
+
+function buildProd(){
+  const clrs=[C1,C2,C3,C4,C5,C6,C1+'99',C2+'99',C3+'99',C4+'99'];
+  mk('prodChart',{type:'bar',data:{labels:ALL.prodL,datasets:[{data:ALL.prodD,backgroundColor:clrs,hoverBackgroundColor:clrs.map(()=>C1),borderRadius:3}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:ctx=>'  Revenue: $'+Math.round(ctx.parsed.x).toLocaleString()}}},
+      scales:{x:{grid:{color:G},ticks:{color:TC,font:{size:11},callback:v=>'$'+Math.round(v/1000)+'k'}},y:{grid:{color:G},ticks:{color:TC,font:{size:11}}}}}});
+}
+
+function applyFilter(store){
+  let rev,txn,aov,qty,monthRev,storeRev,storeLabels;
+  if(store==='Astoria'){
+    rev=232243.91;txn=Math.round(149116*232243.91/698812);aov=4.62;qty=Math.round(214470*232243.91/698812);
+    monthRev=ALL.revAstoria;storeRev=[232243.91];storeLabels=['Astoria'];
+  } else if(store==="Hell's Kitchen"){
+    rev=236511.17;txn=Math.round(149116*236511.17/698812);aov=4.73;qty=Math.round(214470*236511.17/698812);
+    monthRev=ALL.revHK;storeRev=[236511.17];storeLabels=["Hell's Kitchen"];
+  } else if(store==='Lower Manhattan'){
+    rev=230057.25;txn=Math.round(149116*230057.25/698812);aov=4.69;qty=Math.round(214470*230057.25/698812);
+    monthRev=ALL.revLM;storeRev=[230057.25];storeLabels=['Lower Manhattan'];
+  } else {
+    rev=698812.33;txn=149116;aov=4.69;qty=214470;
+    monthRev=ALL.revAll;storeRev=ALL.storeRev;storeLabels=ALL.stores;
+  }
+  document.getElementById('kpi-rev').textContent='$'+Math.round(rev).toLocaleString();
+  document.getElementById('kpi-txn').textContent=txn.toLocaleString();
+  document.getElementById('kpi-qty').textContent=qty.toLocaleString();
+  document.getElementById('kpi-aov').textContent='$'+aov.toFixed(2);
+  document.getElementById('kpi-txn-sub').textContent=store==='all'?'Across all stores':store;
+  buildMonth(monthRev,ALL.months);
+  buildStore(storeRev,storeLabels);
+}
+
+document.getElementById('storeFilter').addEventListener('change',e=>applyFilter(e.target.value));
+applyFilter('all');
+buildCat();
+buildHour();
+buildDow();
+buildProd();
+</script>
